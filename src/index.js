@@ -4,9 +4,13 @@ const app = express();
 
 const port = process.env.PORT || 4000;
 
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
     const { name } = req.query;
     return res.status(200).json({ data: `Hello ${name}! Great to see you.` })
+})
+
+app.get('/status', (req, res) => {
+    return res.status(200).json({ status: "App is working ." })
 })
 
 app.listen(port, () => {
