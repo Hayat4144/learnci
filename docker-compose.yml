@@ -4,6 +4,7 @@ version: '3.8'
 services:
   node-app:
     build: .
+    image: node-server
     ports:
       - "4000:4000"
     environment:
