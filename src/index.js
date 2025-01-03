@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/status', (req, res) => {
-    return res.status(200).json({ status: "App is working ." })
+    return res.status(200).json({ status: `App is working ${process.env.API_KEY} .` })
 })
 
 app.listen(port, () => {

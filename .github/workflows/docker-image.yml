@@ -31,18 +31,23 @@ jobs:
     - name: Push the Docker image
       run: docker push hayat4144/node-server:latest
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #
-  #   steps:
-  #   # Step 5: Deploy to the server
-  #   - name: Deploy to server
-  #     run: |
-  #       ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-  #       docker pull your-dockerhub-username/exress-server:latest
-  #       docker stop exress-server || true
-  #       docker rm exress-server || true
-  #       docker run -d --name exress-server -p 80:4000 your-dockerhub-username/exress-server:latest
-  #       EOF
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
+    steps:
+    # Step 5: Deploy using appleboy/ssh-action
+    - name: SSH and Deploy
+      uses: appleboy/ssh-action@v1.2.0
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root 
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          docker pull hayat4144/node-server:latest
+          docker stop node-server || true
+          docker rm node-server || true
+          docker run -d --name node-server -p 4000:4000 \
+            --env NODE_ENV=production \
+            --env API_KEY=${{ secrets.API_KEY }} \
+            hayat4144/node-server:latest
